@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/kotlin,gradle,java,jetbrains
 # Edit at https://www.toptal.com/developers/gitignore?templates=kotlin,gradle,java,jetbrains
 
+### Minecraft ###
+run
+
 ### Java ###
 # Compiled class file
 *.class
