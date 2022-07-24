@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "bluemap_custom_skin_server",
+  "version": "${version}",
+  "name": "BlueMap Custom Skin Server",
+  "description": "Mod Description",
+  "authors": [
+    "Syorito Hatsuki"
+  ],
+  "contact": {
+    "homepage": "https://syoritohatsuki.dev/"
+  },
+  "license": "MIT Licence",
+  "icon": "assets/bluemap_custom_skin_server/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon"
+      }
+    ]
+  },
+  "mixins": [
+    "bluemap_custom_skin_server.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.8",
+    "fabric": "*",
+    "fabric-language-kotlin": ">=1.8.2+kotlin.1.7.10",
+    "bluemap":  "*",
+    "minecraft": "1.19.x",
+    "java": ">=17"
+  }
+}
