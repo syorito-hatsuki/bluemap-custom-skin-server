@@ -2,12 +2,12 @@ package dev.syoritohatsuki.bluemapcustomskinserver
 
 import com.mojang.logging.LogUtils
 import net.fabricmc.api.ModInitializer
+import org.slf4j.Logger
 
 object BlueMapCustomSkinServerAddon : ModInitializer {
-    private const val MOD_ID = "bluemap_custom_skin_server"
-    val LOGGER = LogUtils.getLogger()
+    val LOGGER: Logger = LogUtils.getLogger()
 
     override fun onInitialize() {
-
+        LOGGER.info("BCSS initialized")
     }
 }

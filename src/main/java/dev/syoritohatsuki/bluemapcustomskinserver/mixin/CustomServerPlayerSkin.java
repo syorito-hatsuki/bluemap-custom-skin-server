@@ -37,11 +37,8 @@ public class CustomServerPlayerSkin {
     }
 
     private String getImageFromServer() throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
+        return HttpClient.newHttpClient().send(HttpRequest.newBuilder()
                 .uri(URI.create(ConfigManager.INSTANCE.read().getCustomSkinServerUrl() + this.uuid))
-                .build();
-
-        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+                .build(), HttpResponse.BodyHandlers.ofString()).body();
     }
 }

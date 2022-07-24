@@ -1,5 +1,6 @@
 package dev.syoritohatsuki.bluemapcustomskinserver.config
 
+import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -13,6 +14,7 @@ object ConfigManager {
 
     init {
         if (!configFile.exists()) {
+            BlueMapCustomSkinServerAddon.LOGGER.info("Default config created")
             if (configDir?.exists() == false) configDir.mkdirs()
             configFile.apply {
                 createNewFile()
@@ -22,6 +24,7 @@ object ConfigManager {
     }
 
     fun read(): Config {
+        BlueMapCustomSkinServerAddon.LOGGER.debug("Config readed")
         return json.decodeFromString(configFile.readText())
     }
 }
