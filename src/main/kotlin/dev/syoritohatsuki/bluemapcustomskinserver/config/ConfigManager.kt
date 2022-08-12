@@ -9,19 +9,24 @@ import java.nio.file.Paths
 
 object ConfigManager {
     private val json = Json { encodeDefaults = true; prettyPrint = true }
-    private val configDir: File? = Paths.get("", "config", "bluemapcustomskinserver").toFile()
+    private val configDir: File = Paths.get("", "config", "bluemapcustomskinserver").toFile()
     private val configFile = File(configDir, "config.json")
 
     init {
         if (!configFile.exists()) {
-            BlueMapCustomSkinServerAddon.LOGGER.info("Default config created")
-            if (configDir?.exists() == false) configDir.mkdirs()
+            if (!configDir.exists()) {
+                configDir.mkdirs()
+                BlueMapCustomSkinServerAddon.LOGGER.info("Default config folder created")
+            }
             configFile.apply {
                 createNewFile()
+                BlueMapCustomSkinServerAddon.LOGGER.info("Default config file created")
                 writeText(json.encodeToString(Config()))
             }
         }
     }
+
+    fun load() = configFile.writeText(json.encodeToString(read()))
 
     fun read(): Config {
         BlueMapCustomSkinServerAddon.LOGGER.debug("Config readed")
