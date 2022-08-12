@@ -8,9 +8,10 @@ Simple addon for BlueMap that allows using a custom skin server.
 ## Config
 
 URL needs to get as input player UUID like in origin Minecraft system
-```json
+```json5
 {
-    "customSkinServerUrl": "https://localhost/"
+    "enableCustomServer": true,                   // If you have problem with our server u can everytime disable it and use Mojang servers
+    "customSkinServerUrl": "https://localhost/"   // Here u must put custom link. Examples u can see below
 }
 ```
 ### Example links
