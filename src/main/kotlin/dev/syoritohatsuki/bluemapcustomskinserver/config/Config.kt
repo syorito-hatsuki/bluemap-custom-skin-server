@@ -1,7 +1,20 @@
 package dev.syoritohatsuki.bluemapcustomskinserver.config
 
-@kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Config(
-   val enableCustomServer: Boolean = true,
-   val customSkinServerUrl: String = "https://localhost/"
+   val serverType: ServerType = ServerType.MOJANG,
+   val customSkinServerUrl: String = "https://localhost/",
+   val getSkinBy: SkinBy = SkinBy.UUID
 )
+
+@Serializable
+enum class ServerType {
+   MOJANG, MOJANG_LIKE, CUSTOM
+}
+
+@Serializable
+enum class SkinBy {
+   UUID, NAME
+}
