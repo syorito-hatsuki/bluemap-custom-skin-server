@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import de.bluecolored.bluemap.common.plugin.skins.PlayerSkin;
 import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon;
 import dev.syoritohatsuki.bluemapcustomskinserver.api.CustomApi;
+import dev.syoritohatsuki.bluemapcustomskinserver.api.MojangLikeApi;
 import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,13 +36,11 @@ public abstract class CustomServerPlayerSkin {
     protected abstract String readTextureUrl(JsonElement json) throws IOException;
 
     public Future<BufferedImage> loadSkin() {
-        var serverType = ConfigManager.INSTANCE.read().getServerType();
-        BlueMapCustomSkinServerAddon.INSTANCE.getLOGGER().info("Server type: " + serverType.name());
-        BlueMapCustomSkinServerAddon.INSTANCE.getLOGGER().info("USER: " + BlueMapCustomSkinServerAddon.INSTANCE.getPLAYER_LIST().get(uuid));
-        BlueMapCustomSkinServerAddon.INSTANCE.getLOGGER().info("UUID: " + uuid);
-        return switch (serverType) {
-            case CUSTOM -> new CustomApi(uuid, BlueMapCustomSkinServerAddon.INSTANCE.getPLAYER_LIST().get(uuid)).getSkin();
+        return switch (ConfigManager.INSTANCE.read().getServerType()) {
+            case CUSTOM ->
+                    new CustomApi(uuid, BlueMapCustomSkinServerAddon.INSTANCE.getPLAYER_LIST().get(uuid)).getSkin();
             case MOJANG -> mojangApi();
+            case MOJANG_LIKE -> new MojangLikeApi(uuid).getSkin();
         };
     }
 
