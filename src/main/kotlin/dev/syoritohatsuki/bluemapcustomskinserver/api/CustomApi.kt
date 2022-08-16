@@ -52,7 +52,7 @@ class CustomApi(private val uuid: UUID) {
                 }.onSuccess {
                     LOGGER.info("Skin loaded: $it")
                 }.onFailure {
-                    LOGGER.error(it.message)
+                    LOGGER.warning(it.message)
                 }
             }
         }

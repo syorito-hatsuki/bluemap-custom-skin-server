@@ -49,7 +49,7 @@ class MojangLikeApi(private val uuid: UUID) {
                     }
                     LOGGER.info("Skin loaded successful")
                 }.onFailure {
-                    LOGGER.error(it.message)
+                    LOGGER.warning(it.message)
                 }
             }
         }

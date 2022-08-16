@@ -59,7 +59,7 @@ public abstract class CustomServerPlayerSkin {
 
                 image.complete(ImageIO.read(new URL(textureUrl)));
             } catch (IOException exception) {
-                BlueMapCustomSkinServerAddon.INSTANCE.getLOGGER().error(exception.getMessage());
+                BlueMapCustomSkinServerAddon.INSTANCE.getLOGGER().warning(exception.getMessage());
                 image.completeExceptionally(exception);
             }
         }).start();
