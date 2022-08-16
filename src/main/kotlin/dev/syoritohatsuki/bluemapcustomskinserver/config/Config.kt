@@ -4,24 +4,30 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Config(
+    val debug: Boolean = false,
     val serverType: ServerType = ServerType.MOJANG,
     val customSkinServerUrl: String = "https://localhost/",
-    val getSkinBy: SkinBy = SkinBy.UUID,
-    val suffix: String = "",
-    val skinByCase: SkinByCase = SkinByCase.DEFAULT
+    val custom: Custom = Custom()
 ) {
-    @Serializable
-    enum class SkinByCase {
-        LOWER, UPPER, DEFAULT
-    }
-
     @Serializable
     enum class ServerType {
         MOJANG, MOJANG_LIKE, CUSTOM
     }
 
     @Serializable
-    enum class SkinBy {
-        UUID, NAME
+    data class Custom(
+        val suffix: String = "",
+        val getSkinBy: SkinBy = SkinBy.NAME,
+        val skinByCase: SkinByCase = SkinByCase.LOWER
+    ) {
+        @Serializable
+        enum class SkinBy {
+            UUID, NAME
+        }
+
+        @Serializable
+        enum class SkinByCase {
+            LOWER, UPPER, DEFAULT
+        }
     }
 }

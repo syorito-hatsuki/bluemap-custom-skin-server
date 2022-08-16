@@ -1,6 +1,6 @@
 package dev.syoritohatsuki.bluemapcustomskinserver.config
 
-import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon.LOGGER
+import dev.syoritohatsuki.bluemapcustomskinserver.debugMode
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -16,11 +16,11 @@ object ConfigManager {
         if (!configFile.exists()) {
             if (!configDir.exists()) {
                 configDir.mkdirs()
-                LOGGER.info("Default config folder created")
+                debugMode("Default config folder created")
             }
             configFile.apply {
                 createNewFile()
-                LOGGER.info("Default config file created")
+                debugMode("Default config file created")
                 writeText(json.encodeToString(Config()))
             }
         }
@@ -29,7 +29,6 @@ object ConfigManager {
     fun load() = configFile.writeText(json.encodeToString(read()))
 
     fun read(): Config {
-        LOGGER.debug("Config readed")
         return json.decodeFromString(configFile.readText())
     }
 }
