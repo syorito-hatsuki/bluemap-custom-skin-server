@@ -10,20 +10,18 @@ import java.util.*
 object BlueMapCustomSkinServerAddon : ModInitializer {
 
     val LOGGER: Logger = LogUtils.getLogger()
-    lateinit var PLAYER_LIST: HashMap<UUID, String>
+    var playerList = HashMap<UUID, String>()
 
     override fun onInitialize() {
         ConfigManager.load()
-
-        PLAYER_LIST = HashMap<UUID, String>()
+        LOGGER.info("BCSS initialized")
 
         PlayerJoinCallback.EVENT.register(PlayerJoinCallback { _, serverPlayerEntity ->
-            PLAYER_LIST[serverPlayerEntity.uuid] = serverPlayerEntity.displayName.string
-            PLAYER_LIST.forEach { (uuid, name) ->
-                println("UUID: $uuid | Name: $name")
+            playerList[serverPlayerEntity.uuid] = serverPlayerEntity.displayName.string
+
+            playerList.forEach { (uuid, name) ->
+                debugMode("UUID: $uuid | Name: $name")
             }
         })
-
-        LOGGER.info("BCSS initialized")
     }
 }

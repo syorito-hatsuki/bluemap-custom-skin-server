@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import de.bluecolored.bluemap.common.plugin.skins.PlayerSkin;
 import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon;
+import dev.syoritohatsuki.bluemapcustomskinserver.ExtensionKt;
 import dev.syoritohatsuki.bluemapcustomskinserver.api.CustomApi;
 import dev.syoritohatsuki.bluemapcustomskinserver.api.MojangLikeApi;
 import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager;
@@ -37,8 +38,7 @@ public abstract class CustomServerPlayerSkin {
 
     public Future<BufferedImage> loadSkin() {
         return switch (ConfigManager.INSTANCE.read().getServerType()) {
-            case CUSTOM ->
-                    new CustomApi(uuid, BlueMapCustomSkinServerAddon.INSTANCE.getPLAYER_LIST().get(uuid)).getSkin();
+            case CUSTOM -> new CustomApi(uuid).getSkin();
             case MOJANG -> mojangApi();
             case MOJANG_LIKE -> new MojangLikeApi(uuid).getSkin();
         };
@@ -50,10 +50,16 @@ public abstract class CustomServerPlayerSkin {
             try (Reader reader = requestProfileJson()) {
                 BlueMapCustomSkinServerAddon.INSTANCE.getLOGGER().info("Connecting to Mojang skin server");
                 var textureInfoJson = readTextureInfoJson(JsonParser.parseReader(reader));
+
+                ExtensionKt.debugMode(textureInfoJson);
+
                 var textureUrl = readTextureUrl(JsonParser.parseString(textureInfoJson));
+
+                ExtensionKt.debugMode(textureUrl);
+
                 image.complete(ImageIO.read(new URL(textureUrl)));
             } catch (IOException exception) {
-                BlueMapCustomSkinServerAddon.INSTANCE.getLOGGER().warn(exception.getMessage());
+                BlueMapCustomSkinServerAddon.INSTANCE.getLOGGER().error(exception.getMessage());
                 image.completeExceptionally(exception);
             }
         }).start();
