@@ -8,7 +8,7 @@
     "Syorito Hatsuki"
   ],
   "contact": {
-    "homepage": "https://syoritohatsuki.dev/"
+    "homepage": "https://syorito-hatsuki.dev/"
   },
   "license": "MIT Licence",
   "icon": "assets/bluemap_custom_skin_server/icon.png",
@@ -21,15 +21,12 @@
       }
     ]
   },
-  "mixins": [
-    "bluemap_custom_skin_server.mixins.json"
-  ],
   "depends": {
-    "fabricloader": ">=0.14.9",
+    "fabricloader": ">=${loaderVersion}",
     "fabric": "*",
-    "fabric-language-kotlin": ">=1.8.2+kotlin.1.7.10",
+    "fabric-language-kotlin": ">=${fabricKotlinVersion}",
     "bluemap": "*",
-    "minecraft": ">=1.18",
-    "java": ">=17"
+    "minecraft": ">=1.19",
+    "java": ">=${java}"
   }
 }

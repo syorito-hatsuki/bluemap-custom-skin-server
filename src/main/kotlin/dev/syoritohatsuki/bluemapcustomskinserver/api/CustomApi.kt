@@ -1,10 +1,9 @@
 package dev.syoritohatsuki.bluemapcustomskinserver.api
 
-import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon.LOGGER
-import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon.playerList
+import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon.logger
 import dev.syoritohatsuki.bluemapcustomskinserver.config.Config
 import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager
-import dev.syoritohatsuki.bluemapcustomskinserver.debugMode
+import dev.syoritohatsuki.bluemapcustomskinserver.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,55 +13,54 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 import javax.imageio.ImageIO
 
-class CustomApi(private val uuid: UUID) {
-
-    private lateinit var name: String
+class CustomApi(private val uuid: UUID, private val name: String) {
 
     fun getSkin(): CompletableFuture<BufferedImage> {
         return CompletableFuture<BufferedImage>().apply {
             CoroutineScope(Dispatchers.IO).launch {
                 kotlin.runCatching {
-                    name = playerList[uuid].toString()
 
-                    debugMode(ConfigManager.read().custom.getSkinBy.toString())
-                    debugMode(ConfigManager.read().custom.skinByCase.toString())
-                    debugMode(ConfigManager.read().customSkinServerUrl)
-                    debugMode(ConfigManager.read().custom.suffix)
-                    debugMode(name)
-                    debugMode(uuid.toString())
+                    debug(ConfigManager.read().custom.getSkinBy.toString())
+                    debug(ConfigManager.read().custom.skinByCase.toString())
+                    debug(ConfigManager.read().customSkinServerUrl)
+                    debug(ConfigManager.read().custom.suffix)
+                    debug(name)
+                    debug(uuid.toString())
 
                     when (ConfigManager.read().custom.getSkinBy) {
+
                         Config.Custom.SkinBy.UUID -> {
                             (ConfigManager.read().customSkinServerUrl + uuid).apply {
 
-                                debugMode(this)
+                                debug(this)
 
                                 complete(ImageIO.read(URL(this)))
                             }
                         }
+
                         Config.Custom.SkinBy.NAME -> {
                             (ConfigManager.read().customSkinServerUrl + getName() + ConfigManager.read().custom.suffix).apply {
 
-                                debugMode(this)
+                                debug(this)
 
                                 complete(ImageIO.read(URL(this)))
                             }
                         }
+
                     }
                 }.onSuccess {
-                    LOGGER.info("Skin loaded: $it")
+                    logger.info("Skin loaded: $it")
                 }.onFailure {
-                    LOGGER.warning(it.message)
+                    logger.warn(it.message)
                 }
             }
         }
     }
 
-    private fun getName(): String {
-        return when (ConfigManager.read().custom.skinByCase) {
-            Config.Custom.SkinByCase.UPPER -> name.uppercase()
-            Config.Custom.SkinByCase.LOWER -> name.lowercase()
-            Config.Custom.SkinByCase.DEFAULT -> name
-        }
+    private fun getName(): String = when (ConfigManager.read().custom.skinByCase) {
+        Config.Custom.SkinByCase.UPPER -> name.uppercase()
+        Config.Custom.SkinByCase.LOWER -> name.lowercase()
+        Config.Custom.SkinByCase.DEFAULT -> name
     }
+
 }

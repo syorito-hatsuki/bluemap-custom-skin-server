@@ -1,8 +1,8 @@
 package dev.syoritohatsuki.bluemapcustomskinserver.api
 
-import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon.LOGGER
+import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon.logger
 import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager
-import dev.syoritohatsuki.bluemapcustomskinserver.debugMode
+import dev.syoritohatsuki.bluemapcustomskinserver.debug
 import dev.syoritohatsuki.bluemapcustomskinserver.dto.mojang.Profile
 import dev.syoritohatsuki.bluemapcustomskinserver.dto.mojang.TextureInfo
 import kotlinx.coroutines.CoroutineScope
@@ -32,7 +32,7 @@ class MojangLikeApi(private val uuid: UUID) {
                     val body = withContext(Dispatchers.IO) {
                         val uri = URI.create(ConfigManager.read().customSkinServerUrl + uuid)
 
-                        debugMode(uri.toString())
+                        debug(uri.toString())
 
                         HttpClient.newHttpClient()
                             .send(HttpRequest.newBuilder(uri).build(), HttpResponse.BodyHandlers.ofString()).body()
@@ -42,16 +42,18 @@ class MojangLikeApi(private val uuid: UUID) {
                     profile.properties.find { it.name == "textures" }?.let {
                         json.decodeFromString<TextureInfo>(String(Base64.getDecoder().decode(it.value))).apply {
 
-                            debugMode(textures.skin.url)
+                            debug(textures.skin.url)
 
                             complete(ImageIO.read(URL(textures.skin.url)))
                         }
                     }
-                    LOGGER.info("Skin loaded successful")
+                    logger.info("Skin loaded successful")
                 }.onFailure {
-                    LOGGER.warning(it.message)
+                    logger.warn(it.message)
                 }
             }
         }
+
     }
+
 }

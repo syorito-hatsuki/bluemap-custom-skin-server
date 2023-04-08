@@ -5,13 +5,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Config(
     val debug: Boolean = false,
-    val serverType: ServerType = ServerType.MOJANG,
+    val serverType: ServerType = ServerType.CUSTOM,
     val customSkinServerUrl: String = "https://localhost/",
     val custom: Custom = Custom()
 ) {
     @Serializable
     enum class ServerType {
-        MOJANG, MOJANG_LIKE, CUSTOM
+        MOJANG_LIKE, CUSTOM
     }
 
     @Serializable

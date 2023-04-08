@@ -15,7 +15,12 @@ version = modVersion
 val mavenGroup: String by project
 group = mavenGroup
 
+val loaderVersion: String by project
+val fabricKotlinVersion: String by project
+
 repositories {
+    maven("https://jitpack.io")
+
     maven {
         name = "Modrinth"
         setUrl("https://api.modrinth.com/maven")
@@ -26,8 +31,6 @@ repositories {
 }
 
 dependencies {
-    //FOR SERVER STARTING
-    implementation("io.netty", "netty-all", "4.1.79.Final")
 
     val minecraftVersion: String by project
     minecraft("com.mojang", "minecraft", minecraftVersion)
@@ -35,17 +38,19 @@ dependencies {
     val yarnMappings: String by project
     mappings("net.fabricmc", "yarn", yarnMappings, null, "v2")
 
-    val loaderVersion: String by project
     modImplementation("net.fabricmc", "fabric-loader", loaderVersion)
 
     val fabricVersion: String by project
     modImplementation("net.fabricmc.fabric-api", "fabric-api", fabricVersion)
 
-    val fabricKotlinVersion: String by project
     modImplementation("net.fabricmc", "fabric-language-kotlin", fabricKotlinVersion)
 
-    val blueMapVersion: String by project
-    modImplementation("maven.modrinth", "BlueMap", blueMapVersion)
+    val blueMapApiVersion: String by project
+    compileOnly("com.github.BlueMap-Minecraft", "BlueMapAPI", blueMapApiVersion)
+
+    val duckyUpdaterVersion: String by project
+    include(modImplementation("maven.modrinth", "ducky-updater", duckyUpdaterVersion))
+
 }
 tasks {
     val javaVersion = JavaVersion.VERSION_17
@@ -63,7 +68,16 @@ tasks {
 
     processResources {
         inputs.property("version", project.version)
-        filesMatching("fabric.mod.json") { expand(mutableMapOf("version" to project.version)) }
+        filesMatching("fabric.mod.json") {
+            expand(
+                mutableMapOf(
+                    "version" to project.version,
+                    "loaderVersion" to loaderVersion,
+                    "fabricKotlinVersion" to fabricKotlinVersion,
+                    "java" to javaVersion.toString()
+                )
+            )
+        }
     }
 
     java {
