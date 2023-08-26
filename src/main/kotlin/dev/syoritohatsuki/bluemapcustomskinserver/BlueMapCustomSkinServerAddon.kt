@@ -19,7 +19,7 @@ object BlueMapCustomSkinServerAddon : ModInitializer {
     val logger: Logger = LogUtils.getLogger()
 
     override fun onInitialize() {
-        DuckyUpdater.checkForUpdate("yMAHcHNr", "bluemap_custom_skin_server")
+        DuckyUpdater.requestUpdates()
 
         logger.info("BCSS initialized")
 

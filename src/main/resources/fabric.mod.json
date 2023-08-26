@@ -21,6 +21,11 @@
       }
     ]
   },
+  "custom": {
+    "duckyupdater": {
+      "modrinthId": "yMAHcHNr"
+    }
+  },
   "depends": {
     "fabricloader": ">=${loaderVersion}",
     "fabric": "*",
