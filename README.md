@@ -57,25 +57,49 @@
 * ![Fabric-Language-Kotlin][fabric-language-kotlin]
 * ![Ducky-Updater-Lib][ducky-updater-lib]
 * ![BlueMap][bluemap]
+* ![fStats][fstats]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Usage
 
 ### Config
-  
+
 ```json5
 {
-  "debug": false,                              // Debug mode for issue or self error search 
-  "serverType": "MOJANG",                      // Server type [ MOJANG_LIKE | CUSTOM ] 
-  "customSkinServerUrl": "https://localhost/", // Here u must put custom link. Examples u can see below
-  "custom": {                                  // This params supported only by CUSTOM server type
-    "suffix": "",                              // Text after username in request url. As example for https://mcskins.top/ need ".png"
-    "getSkinBy": "NAME",                       // Type of search param [ NAME | UUID ]
-    "skinByCase": "LOWER"                      // Name case [ LOWER | UPPER | DEFAULT ]. As example for https://mcskins.top/ need LOWER
+  // Debug mode for issue or self error search 
+  "debug": false,
+  // Server type [ MOJANG_LIKE | CUSTOM ]
+  "serverType": "CUSTOM",
+  // URL to remote server. Added %uuid% and/or %username% placeholders where required
+  "url": "https://localhost/%uuid%/%username%",
+}
+```
+
+<details>
+    <summary>Before 2023.11.1</summary>
+
+```json5
+{
+  // Debug mode for issue or self error search 
+  "debug": false,
+  // Server type [ MOJANG_LIKE | CUSTOM ]
+  "serverType": "MOJANG",
+  // Here u must put custom link. Examples u can see below
+  "customSkinServerUrl": "https://localhost/",
+  // This params supported only by CUSTOM server type
+  "custom": {
+    // Text after username in request url. As example for https://mcskins.top/ need ".png"
+    "suffix": "",
+    // Type of search param [ NAME | UUID ]
+    "getSkinBy": "NAME",
+    // Name case [ LOWER | UPPER | DEFAULT ]. As example for https://mcskins.top/ need LOWER
+    "skinByCase": "LOWER"
   }
 }
 ```
+
+</details>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -123,6 +147,8 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 [fabric]: https://img.shields.io/badge/fabric%20api-DBD0B4?style=for-the-badge
 [fabric-language-kotlin]: https://img.shields.io/badge/fabric%20language%20kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white
 [ducky-updater-lib]: https://img.shields.io/badge/ducky%20updater%20lib-1bd96a?style=for-the-badge
+
+[fstats]: https://img.shields.io/badge/fStats-111111?style=for-the-badge
 [bluemap]: https://img.shields.io/badge/bluemap-2c84e4?style=for-the-badge
 [discord-shield]: https://img.shields.io/discord/1032138561618726952?logo=discord&logoColor=white&style=for-the-badge&label=Discord
 [discord-url]: https://discord.com/invite/zmkyJa3
