@@ -51,7 +51,9 @@ dependencies {
     val duckyUpdaterVersion: String by project
     include(modImplementation("maven.modrinth", "ducky-updater-lib", duckyUpdaterVersion))
 
+    include(modImplementation("maven.modrinth", "fstats", "2023.11.2"))
 }
+
 tasks {
     val javaVersion = JavaVersion.VERSION_17
 

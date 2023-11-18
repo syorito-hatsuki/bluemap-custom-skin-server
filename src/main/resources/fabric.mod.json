@@ -24,10 +24,11 @@
   "custom": {
     "duckyupdater": {
       "modrinthId": "yMAHcHNr"
-    }
+    },
+    "fstats": 39
   },
   "depends": {
-    "fabricloader": ">=${loaderVersion}",
+    "fabricloader": "*",
     "fabric": "*",
     "fabric-language-kotlin": ">=${fabricKotlinVersion}",
     "bluemap": "*",
