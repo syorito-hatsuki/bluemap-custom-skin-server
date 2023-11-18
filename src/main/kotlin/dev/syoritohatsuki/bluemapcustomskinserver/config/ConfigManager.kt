@@ -19,7 +19,6 @@ object ConfigManager {
     init {
         if (!configDir.exists()) configDir.mkdirs()
         if (!configFile.exists()) configFile.writeText(configJson.encodeToString(Config()))
-
     }
 
     fun read(): Config = configJson.decodeFromString(configFile.readText())

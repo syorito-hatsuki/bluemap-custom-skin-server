@@ -1,8 +1,8 @@
 package dev.syoritohatsuki.bluemapcustomskinserver
 
-import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon.logger
 import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager
+import org.slf4j.Logger
 
-fun debug(message: String) {
-    if (ConfigManager.read().debug) logger.warn("DEBUG DATA: $message")
+fun Logger.debugMessage(message: String) {
+    if (ConfigManager.read().debug) warn("\u001B[33mDebug: $message")
 }

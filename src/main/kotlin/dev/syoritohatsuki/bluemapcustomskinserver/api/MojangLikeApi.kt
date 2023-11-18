@@ -2,7 +2,7 @@ package dev.syoritohatsuki.bluemapcustomskinserver.api
 
 import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon.logger
 import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager
-import dev.syoritohatsuki.bluemapcustomskinserver.debug
+import dev.syoritohatsuki.bluemapcustomskinserver.debugMessage
 import dev.syoritohatsuki.bluemapcustomskinserver.dto.mojang.Profile
 import dev.syoritohatsuki.bluemapcustomskinserver.dto.mojang.TextureInfo
 import kotlinx.coroutines.CoroutineScope
@@ -22,38 +22,28 @@ import java.util.concurrent.CompletableFuture
 import javax.imageio.ImageIO
 
 class MojangLikeApi(private val uuid: UUID) {
-    fun getSkin(): CompletableFuture<BufferedImage> {
-
+    fun getSkin(): CompletableFuture<BufferedImage> = CompletableFuture<BufferedImage>().apply {
         val json = Json { ignoreUnknownKeys = true }
-
-        return CompletableFuture<BufferedImage>().apply {
-            CoroutineScope(Dispatchers.IO).launch {
-                kotlin.runCatching {
-                    val body = withContext(Dispatchers.IO) {
-                        val uri = URI.create(ConfigManager.read().customSkinServerUrl + uuid)
-
-                        debug(uri.toString())
-
+        CoroutineScope(Dispatchers.IO).launch {
+            kotlin.runCatching {
+                json.decodeFromString<Profile>(withContext(Dispatchers.IO) {
+                    URI.create(ConfigManager.read().url.replace("%uuid%", uuid.toString())).let {
+                        logger.debugMessage(it.toString())
                         HttpClient.newHttpClient()
-                            .send(HttpRequest.newBuilder(uri).build(), HttpResponse.BodyHandlers.ofString()).body()
+                            .send(HttpRequest.newBuilder(it).build(), HttpResponse.BodyHandlers.ofString()).body()
                     }
-                    json.decodeFromString<Profile>(body)
-                }.onSuccess { profile ->
-                    profile.properties.find { it.name == "textures" }?.let {
-                        json.decodeFromString<TextureInfo>(String(Base64.getDecoder().decode(it.value))).apply {
-
-                            debug(textures.skin.url)
-
-                            complete(ImageIO.read(URL(textures.skin.url)))
-                        }
+                })
+            }.onSuccess { profile ->
+                profile.properties.find { it.name == "textures" }?.let {
+                    json.decodeFromString<TextureInfo>(String(Base64.getDecoder().decode(it.value))).apply {
+                        logger.debugMessage(textures.skin.url)
+                        complete(ImageIO.read(URL(textures.skin.url)))
                     }
-                    logger.info("Skin loaded successful")
-                }.onFailure {
-                    logger.warn(it.message)
                 }
+                logger.info("Skin loaded successful")
+            }.onFailure {
+                logger.warn(it.message)
             }
         }
-
     }
-
 }
