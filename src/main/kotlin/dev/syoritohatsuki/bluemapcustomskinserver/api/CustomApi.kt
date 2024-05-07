@@ -2,7 +2,6 @@ package dev.syoritohatsuki.bluemapcustomskinserver.api
 
 import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon.logger
 import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager
-import dev.syoritohatsuki.bluemapcustomskinserver.debugMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,13 +17,13 @@ class CustomApi(private val uuid: UUID, private val name: String) {
             kotlin.runCatching {
                 val config = ConfigManager.read()
                 config.let {
-                    logger.debugMessage(it.url)
-                    logger.debugMessage(it.serverType.name)
+                    logger.debug(it.url)
+                    logger.debug(it.serverType.name)
                 }
-                logger.debugMessage(name)
-                logger.debugMessage(uuid.toString())
+                logger.debug(name)
+                logger.debug(uuid.toString())
                 ConfigManager.read().url.replace("%uuid%", uuid.toString()).replace("%username%", name).let {
-                    logger.debugMessage(it)
+                    logger.debug(it)
                     complete(ImageIO.read(URI(it).toURL().openStream()))
                 }
             }.onSuccess {
