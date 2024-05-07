@@ -67,6 +67,21 @@
 
 ```json5
 {
+  // Server type [ MOJANG_LIKE | CUSTOM ]
+  "serverType": "CUSTOM",
+  // Direct image mean that image not going to be cut or resized.
+  // That allow you to use APIs that return player head only
+  "directImage": false,
+  // URL to remote server. Use %uuid% and/or %username% placeholders where required
+  "url": "https://localhost/%uuid%/%username%",
+}
+```
+
+<details>
+    <summary>Before 2024.5.1</summary>
+
+```json5
+{
   // Debug mode for issue or self error search 
   "debug": false,
   // Server type [ MOJANG_LIKE | CUSTOM ]
@@ -75,6 +90,8 @@
   "url": "https://localhost/%uuid%/%username%",
 }
 ```
+
+</details>
 
 <details>
     <summary>Before 2023.11.1</summary>
@@ -105,7 +122,7 @@
 
 ## Roadmap
 
-- [ ] Change link format
+- [x] Change link format
 
 See the [open issues](https://github.com/syorito-hatsuki/bluemap-custom-skin-server/issues) for a full list of proposed features (and known issues).
 
