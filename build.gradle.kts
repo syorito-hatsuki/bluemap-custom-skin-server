@@ -52,6 +52,8 @@ dependencies {
     include(modImplementation("maven.modrinth", "ducky-updater-lib", duckyUpdaterVersion))
 
     include(modImplementation("maven.modrinth", "fstats", "2023.12.3"))
+
+    include(implementation("org.sejda.imageio", "webp-imageio", "0.1.6"))
 }
 
 tasks {
