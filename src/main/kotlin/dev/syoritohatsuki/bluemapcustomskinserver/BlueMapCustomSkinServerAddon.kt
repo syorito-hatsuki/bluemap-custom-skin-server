@@ -2,6 +2,7 @@ package dev.syoritohatsuki.bluemapcustomskinserver
 
 import com.mojang.logging.LogUtils
 import de.bluecolored.bluemap.api.BlueMapAPI
+import de.bluecolored.bluemap.api.plugin.PlayerIconFactory
 import de.bluecolored.bluemap.api.plugin.SkinProvider
 import dev.syoritohatsuki.bluemapcustomskinserver.api.CustomApi
 import dev.syoritohatsuki.bluemapcustomskinserver.api.MojangLikeApi
@@ -19,21 +20,29 @@ object BlueMapCustomSkinServerAddon : ModInitializer {
 
     override fun onInitialize() {
         ConfigManager
+
         logger.info("BCSS initialized")
-        ServerLifecycleEvents.SERVER_STARTED.register(ServerLifecycleEvents.ServerStarted { server ->
-            BlueMapAPI.onEnable {
-                it.plugin.skinProvider = SkinProvider { uuid ->
+
+        ServerLifecycleEvents.SERVER_STARTED.register { server ->
+            BlueMapAPI.onEnable { bluemap ->
+                bluemap.plugin.skinProvider = SkinProvider { uuid ->
+                    logger.debug("Config: {}", read())
                     Optional.ofNullable(
                         when (read().serverType) {
                             ServerType.CUSTOM -> CustomApi(
-                                uuid, server.playerManager.getPlayer(uuid)!!.entityName
+                                uuid, server.userCache?.getByUuid(uuid)?.get()?.name
+                                    ?: throw RuntimeException(server.userCache?.getByUuid(uuid)?.get()?.name)
                             ).getSkin()
 
                             ServerType.MOJANG_LIKE -> MojangLikeApi(uuid).getSkin()
                         }.get()
                     )
                 }
+
+                if (read().directImage) bluemap.plugin.playerMarkerIconFactory = PlayerIconFactory { _, playerSkin ->
+                    playerSkin
+                }
             }
-        })
+        }
     }
 }

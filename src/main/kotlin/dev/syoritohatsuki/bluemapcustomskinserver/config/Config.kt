@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Config(
-    val debug: Boolean = false,
     val serverType: ServerType = ServerType.CUSTOM,
+    val directImage: Boolean = false,
     val url: String = "http://0.0.0.0/%uuid%"
 ) {
     @Serializable
