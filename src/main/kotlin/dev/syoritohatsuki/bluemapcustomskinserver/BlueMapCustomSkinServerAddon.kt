@@ -10,10 +10,13 @@ import dev.syoritohatsuki.bluemapcustomskinserver.command.getAbstractPath
 import dev.syoritohatsuki.bluemapcustomskinserver.config.Config.ServerType
 import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager
 import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager.read
+import dev.syoritohatsuki.bluemapcustomskinserver.dsl.register
+import dev.syoritohatsuki.bluemapcustomskinserver.dsl.rootLiteral
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.server.command.CommandManager
+import net.minecraft.server.command.CommandManager.ADMINS_CHECK
 import org.slf4j.Logger
 import java.util.*
 
@@ -27,7 +30,11 @@ object BlueMapCustomSkinServerAddon : ModInitializer {
         logger.info("BCSS initialized")
 
         CommandRegistrationCallback.EVENT.register { dispatcher, _, _ ->
-            dispatcher.register(CommandManager.literal("bcss").getAbstractPath())
+            dispatcher.register {
+                rootLiteral("bcss") {
+                    getAbstractPath("gap", "get-abstract-path")
+                }.requires(CommandManager.requirePermissionLevel(ADMINS_CHECK))
+            }
         }
 
         ServerLifecycleEvents.SERVER_STARTED.register { server ->
