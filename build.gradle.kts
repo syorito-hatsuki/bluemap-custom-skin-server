@@ -56,6 +56,9 @@ dependencies {
     include(modImplementation("maven.modrinth", "fstats", "2026.1.1"))
 
     include(implementation("com.github.usefulness", "webp-imageio", "0.10.2"))
+
+    // Native Integrations
+    modCompileOnlyApi(modImplementation("maven.modrinth", "skinrestorer", "2.4.3+1.21.11-fabric"))
 }
 
 tasks {

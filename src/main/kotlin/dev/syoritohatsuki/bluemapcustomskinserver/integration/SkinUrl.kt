@@ -1,4 +1,4 @@
-package dev.syoritohatsuki.bluemapcustomskinserver.api
+package dev.syoritohatsuki.bluemapcustomskinserver.integration
 
 import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon.logger
 import dev.syoritohatsuki.bluemapcustomskinserver.ImageLoader
@@ -6,19 +6,15 @@ import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager
 import java.awt.image.BufferedImage
 import java.net.URI
 import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 import javax.imageio.ImageIO
+import kotlin.io.path.toPath
 
-class CustomApi(private val uuid: UUID, private val name: String) {
-    fun getSkin(): CompletableFuture<BufferedImage> = CompletableFuture.supplyAsync({
-        val resolved = ConfigManager.read().url
-            .replace("%uuid%", uuid.toString())
-            .replace("%username%", name)
-
-        val uri = URI.create(resolved)
+object SkinUrl : Integration {
+    override fun getSkin(uuid: UUID, username: String): CompletableFuture<BufferedImage> = CompletableFuture.supplyAsync({
+        val uri = URI.create(ConfigManager.getUri(uuid.toString(), username))
 
         when (uri.scheme) {
             "file" -> getImageFromFile(uri)
@@ -27,10 +23,9 @@ class CustomApi(private val uuid: UUID, private val name: String) {
         }
     }, Executors.newCachedThreadPool()).also { future ->
         future.whenComplete { _, ex ->
-            if (ex != null) {
-                logger.warn("Failed to load skin", ex)
-            } else {
-                logger.info("Skin loaded successfully")
+            when {
+                ex != null -> logger.warn("Failed to load skin", ex)
+                else -> logger.info("Skin loaded successfully")
             }
         }
     }
@@ -41,7 +36,7 @@ class CustomApi(private val uuid: UUID, private val name: String) {
     }
 
     private fun getImageFromFile(uri: URI): BufferedImage {
-        val path = Paths.get(uri)
+        val path = uri.toPath()
 
         logger.debug("Resolved file path: {}", path.toAbsolutePath())
 
