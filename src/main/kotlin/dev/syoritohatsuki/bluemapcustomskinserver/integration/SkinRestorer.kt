@@ -20,14 +20,14 @@ object SkinRestorer : Integration {
 
             val json = Json { ignoreUnknownKeys = true }
 
-            val skinUrl = json.decodeFromString<TextureInfo>(
-                String(
-                    Base64.getDecoder().decode(
-                        SkinRestorer.getSkinStorage().getSkin(uuid).value?.signature
-                            ?: throw IllegalStateException("Invalid skin signature or it not exists")
-                    )
+            val decodedSignature = String(
+                Base64.getDecoder().decode(
+                    SkinRestorer.getSkinStorage().getSkin(uuid).value?.value
+                        ?: throw IllegalStateException("Invalid skin signature or it not exists")
                 )
-            ).textures.skin.url
+            )
+
+            val skinUrl = json.decodeFromString<TextureInfo>(decodedSignature).textures.skin.url
 
             logger.debug("Skin URL: $skinUrl")
 
