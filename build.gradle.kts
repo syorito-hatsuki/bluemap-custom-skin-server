@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("fabric-loom")
     kotlin("jvm")
@@ -51,13 +53,13 @@ dependencies {
     val duckyUpdaterVersion: String by project
     include(modImplementation("maven.modrinth", "ducky-updater-lib", duckyUpdaterVersion))
 
-    include(modImplementation("maven.modrinth", "fstats", "2023.12.3"))
+    include(modImplementation("maven.modrinth", "fstats", "2026.1.1"))
 
-    include(implementation("org.sejda.imageio", "webp-imageio", "0.1.6"))
+    include(implementation("com.github.usefulness", "webp-imageio", "0.10.2"))
 }
 
 tasks {
-    val javaVersion = JavaVersion.VERSION_17
+    val javaVersion = JavaVersion.VERSION_21
 
     withType<JavaCompile> {
         options.encoding = "UTF-8"
@@ -67,8 +69,8 @@ tasks {
     }
 
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = javaVersion.toString()
+        compilerOptions {
+            jvmTarget.set(JvmTarget.fromTarget(javaVersion.toString()))
         }
     }
 
