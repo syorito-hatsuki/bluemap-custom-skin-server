@@ -49,6 +49,7 @@ dependencies {
 
     val blueMapApiVersion: String by project
     compileOnly("com.github.BlueMap-Minecraft", "BlueMapAPI", blueMapApiVersion)
+    modCompileOnlyApi("maven.modrinth", "bluemap", "5.15-fabric")
 
     val duckyUpdaterVersion: String by project
     include(modImplementation("maven.modrinth", "ducky-updater-lib", duckyUpdaterVersion))
@@ -58,7 +59,7 @@ dependencies {
     include(implementation("com.github.usefulness", "webp-imageio", "0.10.2"))
 
     // Native Integrations
-    modCompileOnlyApi(modImplementation("maven.modrinth", "skinrestorer", "2.4.3+1.21.11-fabric"))
+    modCompileOnlyApi("maven.modrinth", "skinrestorer", "2.4.3+1.21.11-fabric")
 }
 
 tasks {

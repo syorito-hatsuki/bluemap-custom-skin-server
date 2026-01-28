@@ -18,14 +18,12 @@ object SkinRestorer : Integration {
         CompletableFuture.supplyAsync {
             if (!installed()) throw IllegalStateException("Skin Restorer integration required Skin Restorer mod [https://modrinth.com/mod/skinrestorer]")
 
+            val skinValue = SkinRestorer.getSkinStorage().getSkin(uuid).value?.value
+                ?: throw IllegalStateException("Invalid skin signature or it not exists")
+
             val json = Json { ignoreUnknownKeys = true }
 
-            val decodedSignature = String(
-                Base64.getDecoder().decode(
-                    SkinRestorer.getSkinStorage().getSkin(uuid).value?.value
-                        ?: throw IllegalStateException("Invalid skin signature or it not exists")
-                )
-            )
+            val decodedSignature = String(Base64.getDecoder().decode(skinValue))
 
             val skinUrl = json.decodeFromString<TextureInfo>(decodedSignature).textures.skin.url
 

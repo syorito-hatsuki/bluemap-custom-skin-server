@@ -13,6 +13,9 @@
   "license": "MIT Licence",
   "icon": "assets/bluemap_custom_skin_server/icon.png",
   "environment": "*",
+  "mixins": [
+    "bluemap_custom_skin_server.mixins.json"
+  ],
   "entrypoints": {
     "main": [
       {
