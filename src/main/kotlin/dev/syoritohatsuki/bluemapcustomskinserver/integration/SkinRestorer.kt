@@ -14,12 +14,14 @@ import javax.imageio.ImageIO
 import kotlin.io.path.toPath
 
 object SkinRestorer : Integration {
-    override fun getSkin(uuid: UUID, username: String): CompletableFuture<BufferedImage> =
+    override fun getSkin(uuid: UUID, username: String): CompletableFuture<BufferedImage?> =
         CompletableFuture.supplyAsync {
             if (!installed()) throw IllegalStateException("Skin Restorer integration required Skin Restorer mod [https://modrinth.com/mod/skinrestorer]")
 
-            val skinValue = SkinRestorer.getSkinStorage().getSkin(uuid).value?.value
-                ?: throw IllegalStateException("Invalid skin signature or it not exists")
+            val skinValue = SkinRestorer.getSkinStorage().getSkin(uuid).value?.value ?: run {
+                logger.error("Invalid skin signature or it not exists")
+                return@supplyAsync null
+            }
 
             val json = Json { ignoreUnknownKeys = true }
 
@@ -32,11 +34,16 @@ object SkinRestorer : Integration {
             val skinUri = resolveUri(skinUrl)
 
             when (skinUri.scheme) {
-                "http", "https" -> ImageLoader.getImageFromUrl(skinUrl)
-                "file" -> ImageIO.read(skinUri.toPath().toFile())
-                    ?: throw IllegalStateException("Failed to read image: $skinUri")
+                "http", "https" -> return@supplyAsync ImageLoader.getImageFromUrl(skinUrl)
+                "file" -> ImageIO.read(skinUri.toPath().toFile()) ?: run {
+                    logger.error("Can't get image from file: $skinUrl")
+                    return@supplyAsync null
+                }
 
-                else -> throw IllegalArgumentException("Unsupported URI scheme: ${skinUri.scheme}")
+                else -> {
+                    logger.error("Unsupported URI scheme: ${skinUri.scheme}")
+                    return@supplyAsync null
+                }
             }
         }.whenComplete { _, ex ->
             when {

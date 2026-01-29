@@ -42,7 +42,11 @@ object BlueMapCustomSkinServerAddon : ModInitializer {
             BlueMapAPI.onEnable { bluemap ->
                 bluemap.plugin.skinProvider = SkinProvider { uuid ->
                     val username = server.apiServices.nameToIdCache.getByUuid(uuid)?.get()?.name.let {
-                        it ?: throw RuntimeException(it.toString())
+                        it ?: run {
+                            logger.error("Can't get username from UUID $uuid")
+                            logger.error("Technically impossible cause all players have both")
+                            return@SkinProvider Optional.ofNullable(null)
+                        }
                     }
 
                     logger.debug("-----[ Skin Provider ]-----")
@@ -51,11 +55,16 @@ object BlueMapCustomSkinServerAddon : ModInitializer {
                     logger.debug(uuid.toString())
                     logger.debug("---------------------------")
 
-                    Optional.ofNullable(when (read().integration) {
-                        Integration.SKIN_URL -> SkinUrl.getSkin(uuid, username)
-                        Integration.MOJANG_LIKE_API -> MojangLikeApi.getSkin(uuid, username)
-                        Integration.SKIN_RESTORER -> SkinRestorer.getSkin(uuid, username)
-                    }.get())
+                    Optional.ofNullable(try {
+                        when (read().integration) {
+                            Integration.SKIN_URL -> SkinUrl.getSkin(uuid, username)
+                            Integration.MOJANG_LIKE_API -> MojangLikeApi.getSkin(uuid, username)
+                            Integration.SKIN_RESTORER -> SkinRestorer.getSkin(uuid, username)
+                        }.get()
+                    } catch (_: Exception) {
+                        // Just to avoid hidden throw's
+                        null
+                    })
                 }
 
                 if (read().rawImage) bluemap.plugin.playerMarkerIconFactory = PlayerIconFactory { _, playerSkin ->

@@ -1,6 +1,6 @@
 package dev.syoritohatsuki.bluemapcustomskinserver.integration
 
-import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon
+import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon.logger
 import dev.syoritohatsuki.bluemapcustomskinserver.ImageLoader
 import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager
 import dev.syoritohatsuki.bluemapcustomskinserver.dto.mojang.Profile
@@ -20,42 +20,53 @@ import kotlin.io.path.toPath
 
 object MojangLikeApi : Integration {
 
-    override fun getSkin(uuid: UUID, username: String): CompletableFuture<BufferedImage> =
+    override fun getSkin(uuid: UUID, username: String): CompletableFuture<BufferedImage?> =
         CompletableFuture.supplyAsync {
             val json = Json { ignoreUnknownKeys = true }
 
             val uri = resolveUri(ConfigManager.getUri(uuid.toString(), username))
-            BlueMapCustomSkinServerAddon.logger.debug("Profile source: {}", uri)
+            logger.debug("Profile source: {}", uri)
 
             val profileJson = when (uri.scheme) {
                 "http", "https" -> readJsonFromHttp(uri)
                 "file" -> readJsonFromFile(uri)
-                else -> throw IllegalArgumentException("Unsupported URI scheme: ${uri.scheme}")
+                else -> {
+                    logger.error("Unsupported URI scheme: ${uri.scheme}")
+                    return@supplyAsync null
+                }
             }
 
             val texturesProperty = json.decodeFromString<Profile>(profileJson).properties.find {
                 it.name == "textures"
-            } ?: throw IllegalStateException("Missing textures property")
+            } ?: run {
+                logger.error("Missing textures property")
+                return@supplyAsync null
+            }
 
             val skinUrl = json.decodeFromString<TextureInfo>(
                 String(Base64.getDecoder().decode(texturesProperty.value))
             ).textures.skin.url
 
-            BlueMapCustomSkinServerAddon.logger.debug("Skin URL: $skinUrl")
+            logger.debug("Skin URL: $skinUrl")
 
             val skinUri = resolveUri(skinUrl)
 
             when (skinUri.scheme) {
                 "http", "https" -> ImageLoader.getImageFromUrl(skinUrl)
-                "file" -> ImageIO.read(skinUri.toPath().toFile())
-                    ?: throw IllegalStateException("Failed to read image: $skinUri")
+                "file" -> ImageIO.read(skinUri.toPath().toFile()) ?: run {
+                    logger.error("Can't get image from file: $skinUrl")
+                    return@supplyAsync null
+                }
 
-                else -> throw IllegalArgumentException("Unsupported URI scheme: ${skinUri.scheme}")
+                else -> {
+                    logger.error("Unsupported URI scheme: ${skinUri.scheme}")
+                    return@supplyAsync null
+                }
             }
         }.whenComplete { _, ex ->
             when {
-                ex != null -> BlueMapCustomSkinServerAddon.logger.warn("Failed to load skin", ex)
-                else -> BlueMapCustomSkinServerAddon.logger.info("Skin loaded successfully")
+                ex != null -> logger.warn("Failed to load skin", ex)
+                else -> logger.info("Skin loaded successfully")
             }
         }
 
@@ -71,7 +82,7 @@ object MojangLikeApi : Integration {
 
     private fun readJsonFromFile(uri: URI): String {
         val path = Paths.get(uri)
-        BlueMapCustomSkinServerAddon.logger.debug("Reading JSON from file: {}", path.toAbsolutePath())
+        logger.debug("Reading JSON from file: {}", path.toAbsolutePath())
 
         require(Files.exists(path)) { "File does not exist: $path" }
         require(Files.isRegularFile(path)) { "Not a file: $path" }

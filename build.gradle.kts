@@ -49,7 +49,7 @@ dependencies {
 
     val blueMapApiVersion: String by project
     compileOnly("com.github.BlueMap-Minecraft", "BlueMapAPI", blueMapApiVersion)
-    modCompileOnlyApi("maven.modrinth", "bluemap", "5.15-fabric")
+    modCompileOnlyApi("maven.modrinth", "bluemap", "5.14-fabric")
 
     val duckyUpdaterVersion: String by project
     include(modImplementation("maven.modrinth", "ducky-updater-lib", duckyUpdaterVersion))

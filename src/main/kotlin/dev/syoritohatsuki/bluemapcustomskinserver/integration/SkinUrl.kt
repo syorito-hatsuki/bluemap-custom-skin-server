@@ -13,36 +13,44 @@ import javax.imageio.ImageIO
 import kotlin.io.path.toPath
 
 object SkinUrl : Integration {
-    override fun getSkin(uuid: UUID, username: String): CompletableFuture<BufferedImage> = CompletableFuture.supplyAsync({
-        val uri = URI.create(ConfigManager.getUri(uuid.toString(), username))
+    override fun getSkin(uuid: UUID, username: String): CompletableFuture<BufferedImage?> =
+        CompletableFuture.supplyAsync({
+            val uri = URI.create(ConfigManager.getUri(uuid.toString(), username))
 
-        when (uri.scheme) {
-            "file" -> getImageFromFile(uri)
-            "http", "https" -> getImageFromUrl(uri)
-            else -> throw IllegalArgumentException("Unsupported URI scheme: ${uri.scheme}")
-        }
-    }, Executors.newCachedThreadPool()).also { future ->
-        future.whenComplete { _, ex ->
-            when {
-                ex != null -> logger.warn("Failed to load skin", ex)
-                else -> logger.info("Skin loaded successfully")
+            when (uri.scheme) {
+                "file" -> getImageFromFile(uri)
+                "http", "https" -> getImageFromUrl(uri)
+                else -> return@supplyAsync null
+            }
+        }, Executors.newCachedThreadPool()).also { future ->
+            future.whenComplete { _, ex ->
+                when {
+                    ex != null -> logger.warn("Failed to load skin", ex)
+                    else -> logger.info("Skin loaded successfully")
+                }
             }
         }
-    }
 
-    private fun getImageFromUrl(uri: URI): BufferedImage {
+    private fun getImageFromUrl(uri: URI): BufferedImage? {
         logger.debug("URL: {}", uri)
         return ImageLoader.getImageFromUrl(uri.toString())
     }
 
-    private fun getImageFromFile(uri: URI): BufferedImage {
+    private fun getImageFromFile(uri: URI): BufferedImage? {
         val path = uri.toPath()
 
         logger.debug("Resolved file path: {}", path.toAbsolutePath())
 
-        require(Files.exists(path)) { "File does not exist: $path" }
-        require(Files.isRegularFile(path)) { "Not a file: $path" }
+        if (Files.exists(path)) {
+            logger.error("File does not exist: $path")
+            return null
+        }
 
-        return ImageIO.read(path.toFile()) ?: throw IllegalStateException("Failed to read image: $path")
+        if(Files.isRegularFile(path)) {
+            logger.error("Not a file: $path")
+            return null
+        }
+
+        return ImageIO.read(path.toFile()) ?: return null
     }
 }

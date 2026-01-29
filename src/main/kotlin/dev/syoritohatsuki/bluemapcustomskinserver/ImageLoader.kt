@@ -1,5 +1,6 @@
 package dev.syoritohatsuki.bluemapcustomskinserver
 
+import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon.logger
 import net.fabricmc.loader.api.FabricLoader
 import java.awt.image.BufferedImage
 import java.net.URI
@@ -12,9 +13,14 @@ object ImageLoader {
     val userAgent =
         "syorito-hatsuki/bluemap-custom-skin-server/${modVersion} (https://github.com/syorito-hatsuki/bluemap-custom-skin-server/issues)"
 
-    fun getImageFromUrl(url: String): BufferedImage {
-        val connection = URI(url).toURL().openConnection()
-        connection.setRequestProperty("User-Agent", userAgent)
-        return connection.getInputStream().use(ImageIO::read)
+    fun getImageFromUrl(url: String): BufferedImage? {
+        try {
+            val connection = URI(url).toURL().openConnection()
+            connection.setRequestProperty("User-Agent", userAgent)
+            return connection.getInputStream().use(ImageIO::read)
+        } catch (_: Exception) {
+            logger.error("Failed to load image: $url")
+            return null
+        }
     }
 }
