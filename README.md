@@ -67,6 +67,23 @@
 
 ```json5
 {
+  "configVersion": 2,
+  // MOJANG_LIKE, SKIN_URL, SKIN_RESTORER
+  "integration": "SKIN_URL",
+  // Raw image mean that image not going to be cut or resized.
+  // That allow you to use APIs that return player head only
+  "rawImage": false,
+  // URI only required for MOJANG_LIKE and SKIN_URL
+  // It supports both file:// and http(s)://
+  "uri": "http://0.0.0.0/%uuid%"
+}
+```
+
+<details>
+    <summary>Before 2026.1.1</summary>
+
+```json5
+{
   // Server type [ MOJANG_LIKE | CUSTOM ]
   "serverType": "CUSTOM",
   // Direct image mean that image not going to be cut or resized.
@@ -76,6 +93,8 @@
   "url": "https://localhost/%uuid%/%username%",
 }
 ```
+
+</details>
 
 <details>
     <summary>Before 2024.5.1</summary>
