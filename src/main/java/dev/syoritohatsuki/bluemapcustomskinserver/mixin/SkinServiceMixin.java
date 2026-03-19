@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.authlib.GameProfile;
 import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon;
 import dev.syoritohatsuki.bluemapcustomskinserver.SkinUpdateQueue;
-import net.lionarius.skinrestorer.SkinRestorer;
+import net.lionarius.skinrestorer.skin.SkinService;
 import net.lionarius.skinrestorer.skin.SkinValue;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,8 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Collection;
 
-@Mixin(SkinRestorer.class)
-public class SkinRestorerMixin {
+@Mixin(SkinService.class)
+public class SkinServiceMixin {
     @Inject(
             method = "applySkin(Lnet/minecraft/server/MinecraftServer;Ljava/lang/Iterable;Lnet/lionarius/skinrestorer/skin/SkinValue;Z)Ljava/util/Collection;",
             at = @At(

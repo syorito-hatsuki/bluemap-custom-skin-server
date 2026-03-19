@@ -59,7 +59,7 @@ dependencies {
     include(implementation("com.github.usefulness", "webp-imageio", "0.10.2"))
 
     // Native Integrations
-    modCompileOnlyApi("maven.modrinth", "skinrestorer", "2.4.3+1.21.11-fabric")
+    modCompileOnlyApi("maven.modrinth", "skinrestorer", "2.6.0+1.21.11-fabric")
 }
 
 tasks {

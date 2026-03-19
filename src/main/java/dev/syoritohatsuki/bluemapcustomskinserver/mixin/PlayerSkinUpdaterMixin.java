@@ -21,13 +21,7 @@ public class PlayerSkinUpdaterMixin {
                     target = "Ljava/util/concurrent/TimeUnit;toMillis(J)J"
             )
     )
-    private long bypassRefreshTimer(long original, @Local(argsOnly = true) UUID playerUUID, @Local(name = "now") long now, @Local(name = "lastUpdate") long lastUpdate) {
-        System.out.println("-------");
-        System.out.println("Now: " + now);
-        System.out.println("Last update: " + lastUpdate);
-        System.out.println("Result: " + (now - lastUpdate));
-        System.out.println("Original: " + original);
-        System.out.println("-------");
+    private long bypassRefreshTimer(long original, @Local(argsOnly = true) UUID playerUUID) {
         if (SkinUpdateQueue.INSTANCE.contains(playerUUID)) {
             System.out.println("SkinUpdateQueue found uuid");
             return 0;
