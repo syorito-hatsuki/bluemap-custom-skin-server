@@ -33,8 +33,9 @@
   "depends": {
     "fabricloader": "*",
     "fabric": "*",
-    "fabric-language-kotlin": "*",
+    "fabric-language-kotlin": ">=${fabricKotlinVersion}",
     "bluemap": "*",
-    "minecraft": ">=26.1"
+    "minecraft": ">=1.20",
+    "java": ">=${java}"
   }
 }

@@ -16,7 +16,8 @@ import dev.syoritohatsuki.bluemapcustomskinserver.integration.SkinUrl
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
-import net.minecraft.commands.Commands
+import net.minecraft.server.command.CommandManager
+import net.minecraft.server.command.CommandManager.ADMINS_CHECK
 import org.slf4j.Logger
 import java.util.*
 
@@ -33,14 +34,20 @@ object BlueMapCustomSkinServerAddon : ModInitializer {
             dispatcher.register {
                 rootLiteral("bcss") {
                     getAbstractPath("gap", "get-abstract-path")
-                }.requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
+                }.requires(CommandManager.requirePermissionLevel(ADMINS_CHECK))
             }
         }
 
         ServerLifecycleEvents.SERVER_STARTED.register { server ->
             BlueMapAPI.onEnable { bluemap ->
                 bluemap.plugin.skinProvider = SkinProvider { uuid ->
-                    val username = server.services().nameToIdCache.get(uuid).get().name
+                    val username = server.apiServices.nameToIdCache.getByUuid(uuid)?.get()?.name.let {
+                        it ?: run {
+                            logger.error("Can't get username from UUID $uuid")
+                            logger.error("Technically impossible cause all players have both")
+                            return@SkinProvider Optional.ofNullable(null)
+                        }
+                    }
 
                     logger.debug("-----[ Skin Provider ]-----")
                     logger.debug("Config: {}", read())

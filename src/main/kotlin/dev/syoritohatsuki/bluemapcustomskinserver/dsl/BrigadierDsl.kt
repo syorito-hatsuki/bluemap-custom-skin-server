@@ -7,9 +7,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.tree.LiteralCommandNode
-import net.minecraft.commands.Commands
-import net.minecraft.server.permissions.PermissionCheck
-import net.minecraft.server.permissions.PermissionSetSupplier
+import net.minecraft.command.permission.PermissionCheck
+import net.minecraft.command.permission.PermissionSource
+import net.minecraft.server.command.CommandManager
 import java.util.function.Predicate
 
 /**
@@ -141,8 +141,8 @@ inline infix fun <reified R, S> String.from(ctx: CommandContext<S>): R = ctx.get
 fun <S> ArgumentBuilder<S, *>.requiresPermission(
     check: PermissionCheck,
     block: (@BrigadierDsl PermissionScope<S>).() -> Unit
-): ArgumentBuilder<*, *> where S : PermissionSetSupplier =
-    PermissionScope(this, Commands.hasPermission<S>(check)).apply(block).parent
+): ArgumentBuilder<*, *> where S : PermissionSource =
+    PermissionScope(this, CommandManager.requirePermissionLevel<S>(check)).apply(block).parent
 
 class PermissionScope<S>(
     val parent: ArgumentBuilder<S, *>,
