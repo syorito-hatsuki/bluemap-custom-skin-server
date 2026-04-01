@@ -4,7 +4,7 @@ val archivesBaseName: String by project
 val mavenGroup: String by project
 val modVersion: String by project
 
-val javaVersion = JavaVersion.VERSION_21
+val javaVersion = JavaVersion.VERSION_25
 
 plugins {
     alias(libs.plugins.fabric.loom)
