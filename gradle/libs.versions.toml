@@ -1,0 +1,30 @@
+[versions]
+bluemap = "5.18-fabric"
+bluemap-api = "2.7.7"
+ducky-updater = "2026.3.1"
+fabric-api = "0.145.1+26.1"
+fabric-loader = "0.18.5"
+fabric-loom = "1.15-SNAPSHOT"
+fabric-language-kotlin = "1.13.10+kotlin.2.3.20"
+fstats = "2026.3.1"
+kotlin = "2.3.20"
+minecraft = "26.1"
+skin-restorer = "2.7.1+26.1-fabric"
+webp-imageio = "0.10.2"
+
+[libraries]
+bluemap = { module = "maven.modrinth:bluemap", version.ref = "bluemap" }
+bluemap-api = { module = "de.bluecolored:bluemap-api", version.ref = "bluemap-api" }
+ducky-updater = { module = "maven.modrinth:ducky-updater-lib", version.ref = "ducky-updater" }
+fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
+fabric-language-kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric-language-kotlin" }
+fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
+fstats = { module = "maven.modrinth:fstats", version.ref = "fstats" }
+minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
+skin-restorer = { module = "maven.modrinth:skinrestorer", version.ref = "skin-restorer" }
+webp-imageio = { module = "com.github.usefulness:webp-imageio", version.ref = "webp-imageio" }
+
+[plugins]
+fabric-loom = { id = "net.fabricmc.fabric-loom", version.ref = "fabric-loom" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

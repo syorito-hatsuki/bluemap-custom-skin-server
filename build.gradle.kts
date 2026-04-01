@@ -1,28 +1,26 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+val archivesBaseName: String by project
+val mavenGroup: String by project
+val modVersion: String by project
+
+val javaVersion = JavaVersion.VERSION_21
+
 plugins {
-    id("fabric-loom")
-    kotlin("jvm")
-    kotlin("plugin.serialization")
+    alias(libs.plugins.fabric.loom)
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 base {
-    val archivesBaseName: String by project
     archivesName.set(archivesBaseName)
 }
 
-val modVersion: String by project
+group = mavenGroup
 version = modVersion
 
-val mavenGroup: String by project
-group = mavenGroup
-
-val loaderVersion: String by project
-val fabricKotlinVersion: String by project
-
 repositories {
-    maven("https://jitpack.io")
-
+    maven("https://repo.bluecolored.de/releases")
     maven {
         name = "Modrinth"
         setUrl("https://api.modrinth.com/maven")
@@ -34,36 +32,42 @@ repositories {
 
 dependencies {
 
-    val minecraftVersion: String by project
-    minecraft("com.mojang", "minecraft", minecraftVersion)
+    minecraft(libs.minecraft)
 
-    val yarnMappings: String by project
-    mappings("net.fabricmc", "yarn", yarnMappings, null, "v2")
+    implementation(libs.fabric.api)
+    implementation(libs.fabric.loader)
+    implementation(libs.fabric.language.kotlin)
 
-    modImplementation("net.fabricmc", "fabric-loader", loaderVersion)
+    compileOnly(libs.bluemap)
+    compileOnlyApi(libs.bluemap.api)
 
-    val fabricVersion: String by project
-    modImplementation("net.fabricmc.fabric-api", "fabric-api", fabricVersion)
-
-    modImplementation("net.fabricmc", "fabric-language-kotlin", fabricKotlinVersion)
-
-    val blueMapApiVersion: String by project
-    compileOnly("com.github.BlueMap-Minecraft", "BlueMapAPI", blueMapApiVersion)
-    modCompileOnlyApi("maven.modrinth", "bluemap", "5.14-fabric")
-
-    val duckyUpdaterVersion: String by project
-    include(modImplementation("maven.modrinth", "ducky-updater-lib", duckyUpdaterVersion))
-
-    include(modImplementation("maven.modrinth", "fstats", "2026.1.1"))
-
-    include(implementation("com.github.usefulness", "webp-imageio", "0.10.2"))
+    embed(libs.ducky.updater)
+    embed(libs.fstats)
+    embed(libs.webp.imageio)
 
     // Native Integrations
-    modCompileOnlyApi("maven.modrinth", "skinrestorer", "2.6.0+1.21.11-fabric")
+    compileOnlyApi(libs.skin.restorer)
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(javaVersion.toString()))
+    }
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    withSourcesJar()
 }
 
 tasks {
-    val javaVersion = JavaVersion.VERSION_21
+    jar {
+        from("LICENSE")
+    }
+
+    processResources {
+        filesMatching("fabric.mod.json") {
+            expand(mutableMapOf("version" to project.version))
+        }
+    }
 
     withType<JavaCompile> {
         options.encoding = "UTF-8"
@@ -77,31 +81,9 @@ tasks {
             jvmTarget.set(JvmTarget.fromTarget(javaVersion.toString()))
         }
     }
+}
 
-    jar {
-        from("LICENSE")
-    }
-
-    processResources {
-        inputs.property("version", project.version)
-        filesMatching("fabric.mod.json") {
-            expand(
-                mutableMapOf(
-                    "version" to project.version,
-                    "loaderVersion" to loaderVersion,
-                    "fabricKotlinVersion" to fabricKotlinVersion,
-                    "java" to javaVersion.toString()
-                )
-            )
-        }
-    }
-
-    java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(javaVersion.toString()))
-        }
-        sourceCompatibility = javaVersion
-        targetCompatibility = javaVersion
-        withSourcesJar()
-    }
+fun DependencyHandlerScope.embed(projectDependency: Provider<MinimalExternalModuleDependency>) {
+    implementation(projectDependency)
+    include(projectDependency)
 }
