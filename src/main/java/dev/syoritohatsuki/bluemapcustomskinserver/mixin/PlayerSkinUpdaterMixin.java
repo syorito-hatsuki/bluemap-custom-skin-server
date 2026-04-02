@@ -3,6 +3,7 @@ package dev.syoritohatsuki.bluemapcustomskinserver.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.bluecolored.bluemap.common.plugin.skins.PlayerSkinUpdater;
+import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon;
 import dev.syoritohatsuki.bluemapcustomskinserver.SkinUpdateQueue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,9 +22,9 @@ public class PlayerSkinUpdaterMixin {
                     target = "Ljava/util/concurrent/TimeUnit;toMillis(J)J"
             )
     )
-    private long bypassRefreshTimer(long original, @Local(argsOnly = true) UUID playerUUID) {
-        if (SkinUpdateQueue.INSTANCE.contains(playerUUID)) {
-            System.out.println("SkinUpdateQueue found uuid");
+    private long bypassRefreshTimer(long original, @Local(argsOnly = true) UUID playerUuid) {
+        if (SkinUpdateQueue.INSTANCE.contains(playerUuid)) {
+            BlueMapCustomSkinServerAddon.INSTANCE.getLogger().info("SkinUpdateQueue found uuid");
             return 0;
         }
         return original;
