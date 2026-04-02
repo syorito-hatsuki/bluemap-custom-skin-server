@@ -32,7 +32,7 @@
   },
   "depends": {
     "fabricloader": "*",
-    "fabric": "*",
+    "fabric-api": "*",
     "fabric-language-kotlin": "*",
     "bluemap": "*",
     "minecraft": ">=26.1"
