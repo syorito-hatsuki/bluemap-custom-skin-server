@@ -31,7 +31,7 @@
     "fstats": 39
   },
   "depends": {
-    "fabricloader": "*",
+    "fabricloader": ">=${fabricLoader}",
     "fabric-api": "*",
     "fabric-language-kotlin": "*",
     "bluemap": "*",

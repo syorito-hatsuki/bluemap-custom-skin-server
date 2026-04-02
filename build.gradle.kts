@@ -70,7 +70,10 @@ tasks {
 
     processResources {
         filesMatching("fabric.mod.json") {
-            expand(mutableMapOf("version" to project.version))
+            expand(mapOf(
+                "version" to project.version,
+                "fabricLoader" to libs.fabric.loader.get().version
+            ))
         }
     }
 
