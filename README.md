@@ -68,7 +68,7 @@
 ```json5
 {
   "configVersion": 2,
-  // MOJANG_LIKE, SKIN_URL, SKIN_RESTORER
+  // MOJANG_LIKE, SKIN_URL, SKIN_RESTORER, FABRIC_TAILOR
   "integration": "SKIN_URL",
   // Raw image mean that image not going to be cut or resized.
   // That allow you to use APIs that return player head only
