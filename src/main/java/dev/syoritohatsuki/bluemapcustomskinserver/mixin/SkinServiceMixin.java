@@ -7,7 +7,7 @@ import dev.syoritohatsuki.bluemapcustomskinserver.SkinUpdateQueue;
 import net.lionarius.skinrestorer.skin.SkinService;
 import net.lionarius.skinrestorer.skin.SkinValue;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,7 +24,7 @@ public class SkinServiceMixin {
                     target = "Lnet/lionarius/skinrestorer/util/TickedScheduler;cancel(Ljava/lang/Object;)V"
             )
     )
-    private static void notifyBluemapAboutSkinChange(MinecraftServer server, Iterable<ServerPlayerEntity> targets, SkinValue value, boolean save, CallbackInfoReturnable<Collection<ServerPlayerEntity>> cir, @Local(name = "profile") GameProfile profile) {
+    private static void notifyBluemapAboutSkinChange(MinecraftServer server, Iterable<ServerPlayer> targets, SkinValue value, boolean save, CallbackInfoReturnable<Collection<ServerPlayer>> cir, @Local(name = "profile") GameProfile profile) {
         try {
             SkinUpdateQueue.INSTANCE.add(profile.id());
             SkinUpdateQueue.INSTANCE.getBluemapPluginInstance().getSkinUpdater().updateSkin(profile.id());
