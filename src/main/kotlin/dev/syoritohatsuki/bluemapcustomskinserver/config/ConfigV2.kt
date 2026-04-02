@@ -12,6 +12,7 @@ data class ConfigV2(
     enum class Integration {
         MOJANG_LIKE_API,
         SKIN_URL,
-        SKIN_RESTORER
+        SKIN_RESTORER,
+        FABRIC_TAILOR
     }
 }

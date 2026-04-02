@@ -21,6 +21,7 @@ version = modVersion
 
 repositories {
     maven("https://repo.bluecolored.de/releases")
+    maven("https://maven.bawnorton.com/releases")
     maven {
         name = "Modrinth"
         setUrl("https://api.modrinth.com/maven")
@@ -47,6 +48,10 @@ dependencies {
 
     // Native Integrations
     compileOnlyApi(libs.skin.restorer)
+    compileOnlyApi(libs.fabric.tailor)
+
+    embed(libs.mixinsquared.fabric)
+    annotationProcessor(libs.mixinsquared.fabric)
 }
 
 java {
