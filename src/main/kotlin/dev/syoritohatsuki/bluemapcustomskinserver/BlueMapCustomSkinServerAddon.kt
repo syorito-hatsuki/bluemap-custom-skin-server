@@ -4,6 +4,9 @@ import com.mojang.logging.LogUtils
 import de.bluecolored.bluemap.api.BlueMapAPI
 import de.bluecolored.bluemap.api.plugin.PlayerIconFactory
 import de.bluecolored.bluemap.api.plugin.SkinProvider
+import dev.faststats.ErrorTracker
+import dev.faststats.Metrics
+import dev.faststats.fabric.FabricContext
 import dev.syoritohatsuki.bluemapcustomskinserver.command.getAbstractPath
 import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager
 import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager.read
@@ -22,8 +25,16 @@ import org.slf4j.Logger
 import java.util.*
 
 object BlueMapCustomSkinServerAddon : ModInitializer {
+    const val MOD_ID = "bluemap-custom-skin-server"
+    val ERROR_TRACKER: ErrorTracker = ErrorTracker.contextAware()
 
     val logger: Logger = LogUtils.getLogger()
+
+    private val context: FabricContext =
+        FabricContext.Factory(MOD_ID, "9644e9ed2bde89e5044ac0f5e661267d")
+            .metrics(Metrics.Factory::create)
+            .errorTrackerService(ERROR_TRACKER)
+            .create()
 
     override fun onInitialize() {
         ConfigManager
