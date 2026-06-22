@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "bluemap_custom_skin_server",
+  "id": "bluemap-custom-skin-server",
   "version": "${version}",
   "name": "BlueMap Custom Skin Server",
   "description": "Mod Description",
@@ -11,10 +11,10 @@
     "homepage": "https://syorito-hatsuki.dev/"
   },
   "license": "MIT Licence",
-  "icon": "assets/bluemap_custom_skin_server/icon.png",
+  "icon": "assets/bluemap-custom-skin-server/icon.png",
   "environment": "*",
   "mixins": [
-    "bluemap_custom_skin_server.mixins.json"
+    "bluemap-custom-skin-server.mixins.json"
   ],
   "entrypoints": {
     "main": [
