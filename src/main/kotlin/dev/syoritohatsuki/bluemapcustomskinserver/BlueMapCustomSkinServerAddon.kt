@@ -8,12 +8,11 @@ import dev.faststats.ErrorTracker
 import dev.faststats.Metrics
 import dev.faststats.fabric.FabricContext
 import dev.syoritohatsuki.bluemapcustomskinserver.command.getAbstractPath
-import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager
+import dev.syoritohatsuki.bluemapcustomskinserver.command.getAvailableIntegrations
 import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager.read
-import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigV2.Integration
 import dev.syoritohatsuki.bluemapcustomskinserver.dsl.register
 import dev.syoritohatsuki.bluemapcustomskinserver.dsl.rootLiteral
-import dev.syoritohatsuki.bluemapcustomskinserver.integration.FabricTailor
+import dev.syoritohatsuki.bluemapcustomskinserver.integration.IntegrationRegistry
 import dev.syoritohatsuki.bluemapcustomskinserver.integration.MojangLikeApi
 import dev.syoritohatsuki.bluemapcustomskinserver.integration.SkinRestorer
 import dev.syoritohatsuki.bluemapcustomskinserver.integration.SkinUrl
@@ -37,20 +36,31 @@ object BlueMapCustomSkinServerAddon : ModInitializer {
             .create()
 
     override fun onInitialize() {
-        ConfigManager
-
         logger.info("BCSS initialized")
+
+        IntegrationRegistry.register(MojangLikeApi)
+        IntegrationRegistry.register(SkinRestorer)
+        IntegrationRegistry.register(SkinUrl)
 
         CommandRegistrationCallback.EVENT.register { dispatcher, _, _ ->
             dispatcher.register {
                 rootLiteral("bcss") {
                     getAbstractPath("gap", "get-abstract-path")
+                    getAvailableIntegrations("gai", "get-available-integrations")
                 }.requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
             }
         }
 
         ServerLifecycleEvents.SERVER_STARTED.register { server ->
             BlueMapAPI.onEnable { bluemap ->
+                logger.info("Registered ${IntegrationRegistry.getIds().size} integrations for Custom Skin Server")
+
+                IntegrationRegistry.getIds().forEach { id ->
+                    logger.info("- $id")
+                }
+
+                logger.info("")
+
                 bluemap.plugin.skinProvider = SkinProvider { uuid ->
                     val username = server.services().nameToIdCache.get(uuid).get().name
 
@@ -60,20 +70,17 @@ object BlueMapCustomSkinServerAddon : ModInitializer {
                     logger.debug(uuid.toString())
                     logger.debug("---------------------------")
 
-                    Optional.ofNullable(try {
-                        when (read().integration) {
-                            Integration.SKIN_URL -> SkinUrl.getSkin(uuid, username)
-                            Integration.MOJANG_LIKE_API -> MojangLikeApi.getSkin(uuid, username)
-                            Integration.SKIN_RESTORER -> SkinRestorer.getSkin(uuid, username)
-                            Integration.FABRIC_TAILOR -> {
-                                FabricTailor.provideServer(server)
-                                FabricTailor.getSkin(uuid, username)
-                            }
-                        }.get()
-                    } catch (_: Exception) {
-                        // Just to avoid hidden throw's
-                        null
-                    })
+                    Optional.ofNullable(
+                        try {
+                            val integration = IntegrationRegistry[read().integration]
+                                ?: error("Unknown integration '${read().integration}'")
+
+                            integration.getSkin(uuid, username).get()
+                        } catch (_: Exception) {
+                            // Just to avoid hidden throw's
+                            null
+                        }
+                    )
                 }
 
                 if (read().rawImage) bluemap.plugin.playerMarkerIconFactory = PlayerIconFactory { _, playerSkin ->
