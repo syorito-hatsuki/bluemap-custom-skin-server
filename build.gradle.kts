@@ -48,10 +48,6 @@ dependencies {
 
     // Native Integrations
     compileOnlyApi(libs.skin.restorer)
-    compileOnlyApi(libs.fabric.tailor)
-
-    embed(libs.mixinsquared.fabric)
-    annotationProcessor(libs.mixinsquared.fabric)
 }
 
 java {

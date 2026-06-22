@@ -24,7 +24,6 @@ fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-l
 fabric-tailor = { module = "maven.modrinth:fabrictailor", version.ref = "fabric-tailor" }
 fstats = { module = "maven.modrinth:fstats", version.ref = "fstats" }
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
-mixinsquared-fabric = { module = "com.github.bawnorton.mixinsquared:mixinsquared-fabric", version.ref = "mixinsquared-fabric" }
 skin-restorer = { module = "maven.modrinth:skinrestorer", version.ref = "skin-restorer" }
 webp-imageio = { module = "com.github.usefulness:webp-imageio", version.ref = "webp-imageio" }
 
