@@ -1,11 +1,13 @@
 package dev.syoritohatsuki.bluemapcustomskinserver.integration
 
+import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon
 import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon.logger
 import dev.syoritohatsuki.bluemapcustomskinserver.ImageLoader
 import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager
 import dev.syoritohatsuki.bluemapcustomskinserver.dto.mojang.Profile
 import dev.syoritohatsuki.bluemapcustomskinserver.dto.mojang.TextureInfo
 import kotlinx.serialization.json.Json
+import net.minecraft.resources.Identifier
 import java.awt.image.BufferedImage
 import java.net.URI
 import java.net.http.HttpClient
@@ -69,6 +71,10 @@ object MojangLikeApi : Integration {
                 else -> logger.info("Skin loaded successfully")
             }
         }
+
+    override fun getIdentifier(): Identifier = Identifier.fromNamespaceAndPath(
+        BlueMapCustomSkinServerAddon.MOD_ID, "mojang-like-api"
+    )
 
     private fun resolveUri(raw: String): URI = when {
         raw.startsWith("http://") || raw.startsWith("https://") || raw.startsWith("file:") -> URI.create(raw)

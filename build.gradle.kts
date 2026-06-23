@@ -29,6 +29,10 @@ repositories {
             includeGroup("maven.modrinth")
         }
     }
+    maven {
+        name = "faststatsReleases"
+        url = uri("https://repo.faststats.dev/releases")
+    }
 }
 
 dependencies {
@@ -43,15 +47,12 @@ dependencies {
     compileOnlyApi(libs.bluemap.api)
 
     embed(libs.ducky.updater)
-    embed(libs.fstats)
     embed(libs.webp.imageio)
+
+    embed(libs.faststats)
 
     // Native Integrations
     compileOnlyApi(libs.skin.restorer)
-    compileOnlyApi(libs.fabric.tailor)
-
-    embed(libs.mixinsquared.fabric)
-    annotationProcessor(libs.mixinsquared.fabric)
 }
 
 java {

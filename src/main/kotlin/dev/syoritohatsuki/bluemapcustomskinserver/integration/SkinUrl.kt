@@ -1,8 +1,10 @@
 package dev.syoritohatsuki.bluemapcustomskinserver.integration
 
+import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon
 import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon.logger
 import dev.syoritohatsuki.bluemapcustomskinserver.ImageLoader
 import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager
+import net.minecraft.resources.Identifier
 import java.awt.image.BufferedImage
 import java.net.URI
 import java.nio.file.Files
@@ -30,6 +32,10 @@ object SkinUrl : Integration {
                 }
             }
         }
+
+    override fun getIdentifier(): Identifier = Identifier.fromNamespaceAndPath(
+        BlueMapCustomSkinServerAddon.MOD_ID, "skin-url"
+    )
 
     private fun getImageFromUrl(uri: URI): BufferedImage? {
         logger.debug("URL: {}", uri)
