@@ -33,6 +33,9 @@ repositories {
         name = "faststatsReleases"
         url = uri("https://repo.faststats.dev/releases")
     }
+    maven {
+        url = uri("https://repo.faststats.dev/snapshots")
+    }
 }
 
 dependencies {
