@@ -56,6 +56,7 @@ dependencies {
 
     // Native Integrations
     compileOnlyApi(libs.skin.restorer)
+    compileOnlyApi(libs.skins.restorer)
 }
 
 java {

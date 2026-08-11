@@ -12,10 +12,7 @@ import dev.syoritohatsuki.bluemapcustomskinserver.command.getAvailableIntegratio
 import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager.read
 import dev.syoritohatsuki.bluemapcustomskinserver.dsl.register
 import dev.syoritohatsuki.bluemapcustomskinserver.dsl.rootLiteral
-import dev.syoritohatsuki.bluemapcustomskinserver.integration.IntegrationRegistry
-import dev.syoritohatsuki.bluemapcustomskinserver.integration.MojangLikeApi
-import dev.syoritohatsuki.bluemapcustomskinserver.integration.SkinRestorer
-import dev.syoritohatsuki.bluemapcustomskinserver.integration.SkinUrl
+import dev.syoritohatsuki.bluemapcustomskinserver.integration.*
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
@@ -38,8 +35,11 @@ object BlueMapCustomSkinServerAddon : ModInitializer {
     override fun onInitialize() {
         logger.info("BCSS initialized")
 
+        ServerLifecycleEvents.SERVER_STARTED.register(SkinsRestorer::provideServer)
+
         IntegrationRegistry.register(MojangLikeApi)
         IntegrationRegistry.register(SkinRestorer)
+        IntegrationRegistry.register(SkinsRestorer)
         IntegrationRegistry.register(SkinUrl)
 
         CommandRegistrationCallback.EVENT.register { dispatcher, _, _ ->

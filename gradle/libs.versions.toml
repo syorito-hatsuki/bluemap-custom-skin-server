@@ -10,6 +10,7 @@ faststats = "0.27.3-pre2+mc26.1-26.3"
 kotlin = "2.4.0"
 minecraft = "26.2"
 skin-restorer = "2.7.1+26.1-fabric"
+skins-restorer = "wGTF2aVu"
 webp-imageio = "0.11.0"
 
 [libraries]
@@ -22,6 +23,7 @@ fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-l
 faststats = { module = "dev.faststats.metrics:fabric", version.ref = "faststats" }
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
 skin-restorer = { module = "maven.modrinth:skinrestorer", version.ref = "skin-restorer" }
+skins-restorer = { module = "maven.modrinth:skinsrestorer", version.ref = "skins-restorer" }
 webp-imageio = { module = "com.github.usefulness:webp-imageio", version.ref = "webp-imageio" }
 
 [plugins]
