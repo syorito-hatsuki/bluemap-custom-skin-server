@@ -1,4 +1,4 @@
-package dev.syoritohatsuki.bluemapcustomskinserver.mixin;
+package dev.syoritohatsuki.bluemapcustomskinserver.mixin.de.bluecolored.bluemap.common.plugin.skins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;

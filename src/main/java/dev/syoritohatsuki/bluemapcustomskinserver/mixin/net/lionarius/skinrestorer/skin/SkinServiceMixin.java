@@ -1,4 +1,4 @@
-package dev.syoritohatsuki.bluemapcustomskinserver.mixin;
+package dev.syoritohatsuki.bluemapcustomskinserver.mixin.net.lionarius.skinrestorer.skin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.authlib.GameProfile;

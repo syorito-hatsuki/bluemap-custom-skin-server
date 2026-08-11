@@ -6,8 +6,8 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "FabricModMixin",
-    "PlayerSkinUpdaterMixin",
-    "SkinServiceMixin"
+    "de.bluecolored.bluemap.fabric.FabricModMixin",
+    "de.bluecolored.bluemap.common.plugin.skins.PlayerSkinUpdaterMixin",
+    "net.lionarius.skinrestorer.skin.SkinServiceMixin",
   ]
 }

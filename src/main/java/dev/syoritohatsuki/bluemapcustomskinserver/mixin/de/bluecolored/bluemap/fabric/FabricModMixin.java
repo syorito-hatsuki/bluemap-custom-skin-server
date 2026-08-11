@@ -1,4 +1,4 @@
-package dev.syoritohatsuki.bluemapcustomskinserver.mixin;
+package dev.syoritohatsuki.bluemapcustomskinserver.mixin.de.bluecolored.bluemap.fabric;
 
 import de.bluecolored.bluemap.common.plugin.Plugin;
 import de.bluecolored.bluemap.fabric.FabricMod;
