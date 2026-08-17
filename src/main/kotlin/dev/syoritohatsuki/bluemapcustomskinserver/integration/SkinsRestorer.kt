@@ -7,8 +7,6 @@ import dev.syoritohatsuki.bluemapcustomskinserver.dto.mojang.TextureInfo
 import kotlinx.serialization.json.Json
 import net.minecraft.resources.Identifier
 import net.minecraft.server.MinecraftServer
-import net.skinsrestorer.api.SkinsRestorerProvider
-import net.skinsrestorer.api.property.MojangSkinDataResult
 import java.awt.image.BufferedImage
 import java.net.URI
 import java.nio.file.Paths
@@ -16,7 +14,6 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 import javax.imageio.ImageIO
 import kotlin.io.path.toPath
-import kotlin.jvm.optionals.getOrNull
 
 object SkinsRestorer : Integration {
     val json = Json { ignoreUnknownKeys = true }
@@ -24,15 +21,24 @@ object SkinsRestorer : Integration {
 
     override fun getSkin(uuid: UUID, username: String): CompletableFuture<BufferedImage?> =
         CompletableFuture.supplyAsync {
-            if (!SkinRestorer.isDependenciesInstalled()) throw IllegalStateException("Skins Restorer integration required Skins Restorer mod [https://modrinth.com/mod/skinsrestorer]")
+            if (!isDependenciesInstalled()) throw IllegalStateException("Skins Restorer integration required Skins Restorer mod [https://modrinth.com/mod/skinsrestorer]")
 
-            val skinData: MojangSkinDataResult =
-                SkinsRestorerProvider.get().skinStorage.getPlayerSkin(uuid.toString(), false).getOrNull()
-                    ?: return@supplyAsync null
+            if (server == null) {
+                logger.error("Server not provided")
+                return@supplyAsync null
+            }
 
+            val player = server!!.playerList.getPlayer(uuid)
+                ?: server!!.playerList.getPlayer(username)
+                ?: return@supplyAsync null
+
+            val texturesProperty = player.gameProfile.properties["textures"].firstOrNull() ?: run {
+                logger.error("Missing textures property")
+                return@supplyAsync null
+            }
 
             val skinUrl = json.decodeFromString<TextureInfo>(
-                String(Base64.getDecoder().decode(skinData.skinProperty.value))
+                String(Base64.getDecoder().decode(texturesProperty.value))
             ).textures.skin.url
 
             logger.debug("Skin URL: $skinUrl")
