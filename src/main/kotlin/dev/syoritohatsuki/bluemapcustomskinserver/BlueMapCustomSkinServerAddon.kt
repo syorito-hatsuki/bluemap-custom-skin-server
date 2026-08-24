@@ -15,8 +15,10 @@ import dev.syoritohatsuki.bluemapcustomskinserver.dsl.rootLiteral
 import dev.syoritohatsuki.bluemapcustomskinserver.integration.*
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.commands.Commands
+import net.minecraft.server.level.ServerPlayer
 import org.slf4j.Logger
 import java.util.*
 
@@ -48,6 +50,13 @@ object BlueMapCustomSkinServerAddon : ModInitializer {
                     getAbstractPath("gap", "get-abstract-path")
                     getAvailableIntegrations("gai", "get-available-integrations")
                 }.requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
+            }
+        }
+
+        ServerPlayerEvents.JOIN.register { player: ServerPlayer ->
+            if (ConfigManager.read().integration == SkinsRestorer.getIdentifier()) {
+                SkinUpdateQueue.add(player.gameProfile.id())
+                SkinUpdateQueue.getBluemapPluginInstance()!!.skinUpdater.updateSkin(player.gameProfile.id())
             }
         }
 
