@@ -9,7 +9,7 @@ import dev.faststats.Metrics
 import dev.faststats.fabric.FabricContext
 import dev.syoritohatsuki.bluemapcustomskinserver.command.getAbstractPath
 import dev.syoritohatsuki.bluemapcustomskinserver.command.getAvailableIntegrations
-import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager.read
+import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager
 import dev.syoritohatsuki.bluemapcustomskinserver.dsl.register
 import dev.syoritohatsuki.bluemapcustomskinserver.dsl.rootLiteral
 import dev.syoritohatsuki.bluemapcustomskinserver.integration.*
@@ -72,17 +72,18 @@ object BlueMapCustomSkinServerAddon : ModInitializer {
 
                 bluemap.plugin.skinProvider = SkinProvider { uuid ->
                     val username = server.services().nameToIdCache.get(uuid).get().name
+                    val config = ConfigManager.read()
 
                     logger.debug("-----[ Skin Provider ]-----")
-                    logger.debug("Config: {}", read())
+                    logger.debug("Config: {}", config)
                     logger.debug(username)
                     logger.debug(uuid.toString())
                     logger.debug("---------------------------")
 
                     Optional.ofNullable(
                         try {
-                            val integration = IntegrationRegistry[read().integration]
-                                ?: error("Unknown integration '${read().integration}'")
+                            val integration = IntegrationRegistry[config.integration]
+                                ?: error("Unknown integration '${config.integration}'")
 
                             integration.getSkin(uuid, username).get()
                         } catch (_: Exception) {
@@ -92,7 +93,7 @@ object BlueMapCustomSkinServerAddon : ModInitializer {
                     )
                 }
 
-                if (read().rawImage) bluemap.plugin.playerMarkerIconFactory = PlayerIconFactory { _, playerSkin ->
+                if (ConfigManager.read().rawImage) bluemap.plugin.playerMarkerIconFactory = PlayerIconFactory { _, playerSkin ->
                     playerSkin
                 }
             }
