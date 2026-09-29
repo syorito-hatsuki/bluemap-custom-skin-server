@@ -22,7 +22,7 @@ public class PlayerSkinUpdaterMixin {
                     target = "Ljava/util/concurrent/TimeUnit;toMillis(J)J"
             )
     )
-    private long bypassRefreshTimer(long original, @Local(argsOnly = true) UUID playerUuid) {
+    private long bypassRefreshTimer(long original, @Local(argsOnly = true, name = "playerUuid") UUID playerUuid) {
         if (SkinUpdateQueue.INSTANCE.contains(playerUuid)) {
             BlueMapCustomSkinServerAddon.INSTANCE.getLogger().info("SkinUpdateQueue found uuid");
             return 0;

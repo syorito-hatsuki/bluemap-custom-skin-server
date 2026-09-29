@@ -1,5 +1,4 @@
 {
-  "required": true,
   "package": "dev.syoritohatsuki.bluemapcustomskinserver.mixin",
   "compatibilityLevel": "JAVA_25",
   "injectors": {
