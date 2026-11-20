@@ -4,6 +4,7 @@ import dev.syoritohatsuki.bluemapcustomskinserver.BlueMapCustomSkinServerAddon
 import dev.syoritohatsuki.bluemapcustomskinserver.integration.MojangLikeApi
 import dev.syoritohatsuki.bluemapcustomskinserver.integration.SkinRestorer
 import dev.syoritohatsuki.bluemapcustomskinserver.integration.SkinUrl
+import dev.syoritohatsuki.bluemapcustomskinserver.integration.FabricTailor
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonObject
@@ -60,15 +61,7 @@ object ConfigManager {
         integration = when (this.integration) {
             ConfigV2.Integration.SKIN_URL -> SkinUrl.getIdentifier()
             ConfigV2.Integration.MOJANG_LIKE_API -> MojangLikeApi.getIdentifier()
-            ConfigV2.Integration.FABRIC_TAILOR -> run {
-                BlueMapCustomSkinServerAddon.logger.warn("Fabric Tailor is now standalone module, please install it manually:")
-                BlueMapCustomSkinServerAddon.logger.warn("- CurseForge: https://www.curseforge.com/minecraft/mc-mods/bluemap-custom-skin-server-fabric-tailor-integration")
-                BlueMapCustomSkinServerAddon.logger.warn("- Modrinth: https://modrinth.com/project/bluemap-custom-skin-server-fabric-tailor-integration")
-
-                return@run Identifier.fromNamespaceAndPath(
-                    "bluemap-custom-skin-server-fabric-tailor-integration", "fabric-tailor"
-                )
-            }
+            ConfigV2.Integration.FABRIC_TAILOR -> FabricTailor.getIdentifier()
 
             ConfigV2.Integration.SKIN_RESTORER -> SkinRestorer.getIdentifier()
         }, rawImage = this.rawImage, uri = this.uri

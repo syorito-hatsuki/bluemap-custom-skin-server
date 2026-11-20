@@ -13,6 +13,7 @@ import dev.syoritohatsuki.bluemapcustomskinserver.config.ConfigManager
 import dev.syoritohatsuki.bluemapcustomskinserver.dsl.register
 import dev.syoritohatsuki.bluemapcustomskinserver.dsl.rootLiteral
 import dev.syoritohatsuki.bluemapcustomskinserver.integration.*
+import dev.syoritohatsuki.bluemapcustomskinserver.integration.FabricTailor
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
@@ -38,8 +39,10 @@ object BlueMapCustomSkinServerAddon : ModInitializer {
         logger.info("BCSS initialized")
 
         ServerLifecycleEvents.SERVER_STARTED.register(SkinsRestorer::provideServer)
+        ServerLifecycleEvents.SERVER_STARTED.register(FabricTailor::provideServer)
 
         IntegrationRegistry.register(MojangLikeApi)
+        IntegrationRegistry.register(FabricTailor)
         IntegrationRegistry.register(SkinRestorer)
         IntegrationRegistry.register(SkinsRestorer)
         IntegrationRegistry.register(SkinUrl)
@@ -55,6 +58,13 @@ object BlueMapCustomSkinServerAddon : ModInitializer {
 
         ServerPlayerEvents.JOIN.register { player: ServerPlayer ->
             if (ConfigManager.read().integration == SkinsRestorer.getIdentifier()) {
+                SkinUpdateQueue.add(player.gameProfile.id())
+                SkinUpdateQueue.getBluemapPluginInstance()!!.skinUpdater.updateSkin(player.gameProfile.id())
+            }
+        }
+
+        ServerPlayerEvents.JOIN.register { player: ServerPlayer ->
+            if (ConfigManager.read().integration == FabricTailor.getIdentifier()) {
                 SkinUpdateQueue.add(player.gameProfile.id())
                 SkinUpdateQueue.getBluemapPluginInstance()!!.skinUpdater.updateSkin(player.gameProfile.id())
             }

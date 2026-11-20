@@ -22,6 +22,7 @@ version = modVersion
 repositories {
     maven("https://repo.bluecolored.de/releases")
     maven("https://maven.bawnorton.com/releases")
+    maven("https://maven.enjarai.dev/mirrors")
     maven {
         name = "Modrinth"
         setUrl("https://api.modrinth.com/maven")
@@ -54,9 +55,14 @@ dependencies {
 
     embed(libs.faststats)
 
+    implementation("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.3.9")
+    annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.3.9")
+    include("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.3.9")
+
     // Native Integrations
     compileOnlyApi(libs.skin.restorer)
     compileOnlyApi(libs.skins.restorer)
+    compileOnlyApi(libs.fabric.tailor)
 }
 
 java {
